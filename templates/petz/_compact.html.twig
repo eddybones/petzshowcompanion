@@ -1,0 +1,95 @@
+{% set alternate = false %}
+{% for pet in petz %}
+    {% if alternate %}
+        {% set alternateClass = "alternate" %}
+        {% set alternate = false %}
+    {% else %}
+        {% set alternateClass = "" %}
+        {% set alternate = true %}
+    {% endif %}
+    <div class="compactPet {{ alternateClass }} showing" data-hash="{{ pet.getHash() }}">
+        <details>
+            <summary>
+                <span class="name">
+                    {{ pet.getCallName() }}
+                    {% if pet.getShowName() %}
+                        - "{{ pet.getShowName() }}"
+                    {% endif %}
+                </span>
+                <span class="points">
+                    {% for rollup in pet.getPointsRollup() %}
+                        <span class="rank">
+                            <b>{{ rollup.getShowType().name }}:</b> {{ rollup.getTotal() }}
+                        </span>
+                    {% endfor %}
+                </span>
+                <span class="actions">
+                    <a href="{{ path('petz_edit', { 'hash': pet.getHash() }) }}" title="Edit"><span
+                        class="material-symbols-outlined">edit</span></a>
+                    <a href="{{ path('petz_delete_confirm', { 'hash': pet.getHash() }) }}" title="Delete"><span
+                        class="material-symbols-outlined">delete</span></a>
+                </span>
+            </summary>
+            <section>
+                <span class="pic">
+                {% set pics = pet.getPics() %}
+                {% if not pics.isEmpty() and picExists(pics.first().getFile()) %}
+                    <img src="/pics/{{ pics.first().getFile() }}" alt="Pic of {{ pet.getCallName() }}">
+                {% else %}
+                    <img src="{{ asset('build/images/default_pic.png') }}" alt="Pet Silhouette">
+                {% endif %}
+                </span>
+
+                <div class="attributes">
+                    {% if pet.getPrefix() %}
+                        <span class="attr"><span class="label">Prefix:</span> {{ pet.getPrefix() }}</span>
+                    {% endif %}
+                    {% if pet.getHexerOrBreeder() %}
+                        <span class="attr">
+                            <span class="label">Hexer/Breeder:</span> {{ pet.getHexerOrBreeder() }}
+                        </span>
+                    {% endif %}
+                    {% if pet.getBirthday() %}
+                        <span class="attr"><span
+                                    class="label">Birthday (Y-M-D):</span> {{ pet.getBirthday()|date('Y-m-d') }}</span>
+                    {% endif %}
+                    {% if pet.getSexName() %}
+                        <span class="attr"><span class="label">Sex:</span> {{ pet.getSexName() }}</span>
+                    {% endif %}
+                    <span class="attr">
+                        <span class="label">Retired:</span> {{ pet.getRetired() ? 'Yes' : 'No' }}
+                    </span>
+                    {% if pet.getNotes() %}
+                        <span class="attr">
+                            <a href="#" class="showNotes">Notes &#9658;</a>
+                        </span>
+                        <div class="notes">{{ pet.getNotes()|nl2br }}</div>
+                    {% endif %}
+                </div>
+
+                <div class="points">
+                    {% for rollup in pet.getPointsRollup() %}
+                        <span class="rank">
+                            <b>{{ rollup.getShowType().name }}:</b>
+                            ({{ rollup.getTotal() }})
+                            {{ getShowTitle(rollup.getShowType(), pet.getType(), rollup.getTotal()) }}
+                        </span>
+                    {% endfor %}
+                    {% if pet.getPoints()|length %}
+                    <span class="editPointsContainer">
+                        <a href="#"><span class="editPoints material-symbols-outlined" data-hash="{{ pet.getHash() }}">edit_square</span></a>
+                    </span>
+                    {% endif %}
+                </div>
+
+                <aside>
+                    <div class="addpoints">
+                        <div class="wait"></div>
+                        <div class="ok"></div>
+                        {{ include('petz/_points_form.html.twig', { 'hash': pet.getHash() }) }}
+                    </div>
+                </aside>
+            </section>
+        </details>
+    </div>
+{% endfor %}

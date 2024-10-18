@@ -1,0 +1,26 @@
+cd /var/www/petzshowcompanion.com
+mv prod_build.zip ../prod_build.zip
+rm -rf *
+unzip -o -q ../prod_build.zip -d .
+rm -f ../prod_build.zip
+
+chmod +x ./pscbackup.sh
+dos2unix ./pscbackup.sh
+mv -f ./pscbackup.sh /usr/local/bin
+
+chmod +x ./pscrefreshstage.sh
+dos2unix ./pscrefreshstage.sh
+mv -f ./pscrefreshstage.sh /usr/local/bin
+
+ln -s /var/www/psc_data public/pics
+
+systemctl --user stop psc-mailer.service
+mv psc-mailer.service ~/.config/systemd/user
+systemctl --user enable psc-mailer.service
+systemctl --user start psc-mailer.service
+systemctl --user daemon-reload
+
+mysql psc < /var/www/petzshowcompanion.com/schema/schema.sql
+php bin/console cache:clear
+php bin/console cache:warmup
+chown -R www-data:www-data .

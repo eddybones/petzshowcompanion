@@ -1,0 +1,20 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}- Verify Email{% endblock %}
+
+{% block body %}
+    <header>
+        <h1>
+        {% if success %}
+            Email Verified
+        {% else %}
+            Problem Verifying Email
+        {% endif %}
+        </h1>
+    </header>
+    {% if success %}
+        <p>Your email address has been successfully verified. Please <a href="{{ path('app_login') }}">log in</a>.</p>
+    {% else %}
+        <p>There was a problem verifying your email address. We can try <a href="{{ path('resend_verification') }}">resending</a> the verification code. If the problem persists, give us a holler.</p>
+    {% endif %}
+{% endblock %}

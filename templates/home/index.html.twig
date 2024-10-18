@@ -1,0 +1,23 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}- News{% endblock %}
+
+{% block body %}
+    <div id="home">
+        <h1>Latest Updates</h1>
+
+        <article class="news">
+            <h1>Release 2024.2</h1>
+            {# 2024/02/12 #}
+            <p>This release adds proper Unicode support to text fields. What does that mean? <b>Emojis!</b> You can add emojis or any other non-Latin-alphabet characters wherever you want. You can even use them in filters.
+            <br><img src="{{ asset('build/images/releases/unicode.png') }}" class="center"></p>
+        </article>
+
+        <article class="news">
+            <h1>Release 2024.1</h1>
+            {# 2024/02/10 #}
+            <p>This small update introduces this homepage where I can share future news and updates.</p>
+            <p>Also included is <b>Sticky Sorting and Filtering</b>. When you apply sorting and/or filtering in your petz list, your selections will be saved and applied whenever you return to the page. Add more petz, log out and back in again, do whatever! Your sorting and filtering will remain until you clear them.</p>
+        </article>
+    </div>
+{% endblock %}

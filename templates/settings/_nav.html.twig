@@ -1,0 +1,13 @@
+<nav class="left">
+    <h2>Account</h2>
+    <a href="{{ path('reset_password') }}">Change Password</a>
+
+    {% if getEnv('PUBLIC_PAGES_ENABLED') %}
+    <h2>Profile</h2>
+    <a href="{{ path('profile_settings') }}">Edit</a>
+    {% endif %}
+
+    <h2>Petz</h2>
+    <a href="{{ path('tags_page') }}">Tags</a>
+    <a href="{{ path('display_settings') }}">Display Settings</a>
+</nav>

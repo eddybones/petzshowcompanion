@@ -1,0 +1,23 @@
+<div id="petzGrid">
+    {% for pet in petz %}
+        <div class="showing profileGrid" id="{{ pet.getHash() }}">
+            <h3 class="name">
+                {% if not privacy.callNameIsPrivate() %}
+                    {{ pet.getCallName() }}
+                {% endif %}
+                {% if privacy.callNameIsPrivate() and not privacy.showNameIsPrivate() and pet.getShowName()|length %}
+                    {{ pet.getShowName() }}
+                {% endif %}
+            </h3>
+
+            <span class="pic">
+                {% set pics = pet.getPics() %}
+                {% if not pics.isEmpty() and picExists(pics.first().getFile()) %}
+                    <img src="/pics/{{ pics.first().getFile() }}" alt="Pic of {{ pet.getCallName() }}">
+                {% else %}
+                    <img src="{{ asset('build/images/default_pic.png') }}" alt="Pet Silhouette">
+                {% endif %}
+            </span>
+        </div>
+    {% endfor %}
+</div>

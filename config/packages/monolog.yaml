@@ -1,0 +1,6 @@
+monolog:
+    handlers:
+        main:
+            type: stream
+            path: '%env(resolve:LOG_FILE)%'
+            level: info

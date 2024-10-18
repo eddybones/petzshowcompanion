@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <title>Petz Show Companion {% block title %}{% endblock %}</title>
+        <link rel="icon" href="data:;base64,iVBORw0KGgo=">
+        {% block stylesheets %}
+            {{ encore_entry_link_tags('css/main') }}
+        {% endblock %}
+    </head>
+    <body>
+        <main>
+            <div id="app"></div>
+            <header>
+                <h1>Petz Show Companion</h1>
+                {% if is_granted('IS_AUTHENTICATED_FULLY') and is_granted('ROLE_EMAIL_VERIFIED') %}
+                    <div id="auth">{{ app.user.email }}
+                        <div id="actions">
+                            <span class="item">
+                                <span class="material-symbols-outlined">settings</span> <a href="{{ path('settings') }}">Settings</a>
+                            </span>
+                            <span class="item">
+                                <span class="material-symbols-outlined">logout</span> <a href="{{ path('app_logout') }}">Logout</a>
+                            </span>
+                        </div>
+                    </div>
+                {% endif %}
+            </header>
+            {% if is_granted('IS_AUTHENTICATED_FULLY') and is_granted('ROLE_EMAIL_VERIFIED') %}
+            <nav>
+                <a href="/home">Home</a>
+                <a href="/petz/list">My Petz</a>
+                {% if getEnv('PUBLIC_PAGES_ENABLED') %}
+                <a href="/community">Community</a>
+                {% endif %}
+            </nav>
+            {% endif %}
+            <section>
+                {% block body %}{% endblock %}
+            </section>
+        </main>
+    </body>
+    {% block scripts %}{% endblock %}
+</html>

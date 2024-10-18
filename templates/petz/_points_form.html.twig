@@ -1,0 +1,16 @@
+<form action="{{ path('petz_points_add_action', { 'hash': hash }) }}" method="post">
+    <label for="showtype">Show Type</label>
+    <select name="showtype">
+        {% for type in showTypes %}
+            <option value="{{ type.value }}">{{ type.name }}</option>
+        {% endfor %}
+    </select>
+
+    <label for="rank">Rank (Points)</label>
+    <select class="rank" name="rank">
+        {% for rank in poseRankPoints %}
+            <option value="{{ rank.value }}">{{ rank.name|camelSpace }} ({{ rank.value }})</option>
+        {% endfor %}
+    </select>
+    <button type="submit" name="submit" class="addPoints" data-hash="{{ hash }}">Add</button>
+</form>

@@ -1,0 +1,3 @@
+open sftp://%CW_SERVER_USER%@%CW_SERVER_IP%/var/www/stage.petzshowcompanion.com/ -hostkey="%CW_SERVER_SSH_HOSTKEY%" -privatekey="%CW_SERVER_PPK%" -rawsettings AuthGSSAPIKEX=1 Cipher="aes,chacha20,3des,WARN,des,blowfish,arcfour"
+put stage_build.zip
+exit

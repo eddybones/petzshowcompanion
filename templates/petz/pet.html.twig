@@ -1,0 +1,123 @@
+{% extends 'base.html.twig' %}
+
+{% if add %}
+    {% set title = 'Add Pet' %}
+    {% set action = path('petz_add_action') %}
+{% else %}
+    {% set title = 'Edit Pet' %}
+    {% set action = path('petz_edit_action', { 'hash': pet.getHash() }) %}
+{% endif %}
+
+{% block title %}- {{ title }}{% endblock %}
+
+{% block scripts %}
+    {{ encore_entry_script_tags('scripts/pet') }}
+{% endblock %}
+
+{% block body %}
+    <header>
+        <h1>{{ title }}</h1>
+        <a href="#" class="save" onclick="document.getElementById('petForm').submit()"><span class="material-symbols-outlined">save</span> Save Pet</a>
+        <a href="{{ path('petz_list') }}"><span class="material-symbols-outlined">cancel</span> Cancel</a>
+    </header>
+
+    {% if error %}
+        <p class="error">Call Name is required.</p>
+    {% endif %}
+
+    <form action="{{ action }}" method="post" enctype="multipart/form-data" id="petForm">
+        <input type="hidden" id="petHash" value="{{ pet.getHash() }}" />
+
+        {# Left column #}
+        <div class="container">
+            <label for="callname" class="required">Call Name</label>
+            <input type="text" name="callname" value="{{ pet.getCallName() }}">
+
+            <label for="showname">Show Name</label>
+            <input type="text" name="showname" value="{{ pet.getShowName() }}">
+
+            <label for="prefix">Prefix</label>
+            <input type="text" name="prefix" value="{{ pet.getPrefix() }}">
+
+            <label for="hexerOrBreeder">Hexer/Breeder</label>
+            <input type="text" name="hexerOrBreeder" value="{{ pet.getHexerOrBreeder() }}">
+
+            <label for="birthday">Birthday (YYYY / M / D)</label>
+            <div class="date">
+                {% set year = '' %}
+                {% set month = '' %}
+                {% set day = '' %}
+                {% if error %}
+                    {% if birthdayParts %} {# This should be an array from the model storing the prior request values #}
+                        {% set year = birthdayParts.year %}
+                        {% set month = birthdayParts.month %}
+                        {% set day = birthdayParts.day %}
+                    {% endif %}
+                {% else %}
+                    {% set birthday = pet.getBirthday() %}
+                    {% if birthday %}
+                        {% set year = birthday|date('Y') %}
+                        {% set month = birthday|date('m') %}
+                        {% set day = birthday|date('d') %}
+                    {% endif %}
+                {% endif %}
+                <input type="text" name="year" value="{{ year }}">
+                <span class="date-divider">/</span>
+                <input type="text" name="month" value="{{ month }}">
+                <span class="date-divider">/</span>
+                <input type="text" name="day" value="{{ day }}">
+            </div>
+
+            <label for="type">Pet Type</label>
+            <select name="type">
+                {% for type in petTypes %}
+                    <option value="{{ type.value }}"
+                            {% if pet.getType().value == type.value %} selected="selected" {% endif %}>{{ type.name }}</option>
+                {% endfor %}
+            </select>
+
+            <label for="sex">Sex</label>
+            <select name="sex">
+                <option value="" {% if pet.getSex() is null %} selected="selected" {% endif %}>?</option>
+                {% for type in sexTypes %}
+                    <option value="{{ type.value }}"
+                            {% if pet.getSex() is not null and pet.getSex() == type.value %} selected="selected" {% endif %}>{{ type.name }}</option>
+                {% endfor %}
+            </select>
+
+            <label for="retired" class="checkbox">Retired</label>
+            <input type="checkbox" name="retired" {% if pet.getRetired() %} checked {% endif %}>
+
+            <label for="notes">Notes</label>
+            <textarea name="notes">{{ pet.getNotes() }}</textarea>
+        </div>
+
+        {# Right column #}
+        <div>
+            <div class="container stacked">
+                <div id="picForm"></div>
+            </div>
+
+            <div class="container stacked tags">
+                <h2>Tags</h2>
+                {% if allTags is empty %}
+                    <p>There are no tags added yet. You can <a href="{{ path('tags_page') }}">add some</a> in the settings menu.</p>
+                {% else %}
+                    {% for tag in allTags %}
+                        <span class="tag">
+                            <input type="checkbox" name="tag-{{ tag.getHash() }}" {% if tag in pet.getTags() %}checked="checked"{% endif %}> {{ tag.getName() }}
+                        </span>
+                    {% endfor %}
+                {% endif %}
+            </div>
+
+            {% if getEnv('PUBLIC_PAGES_ENABLED') %}
+            <div class="container stacked">
+                <h2>Private</h2>
+                <input type="checkbox" name="private" {% if pet.getPrivate() %} checked {% endif %}> Make this pet private
+                <p>Alternatively, you can change your <a href="{{ path('display_settings') }}">privacy settings</a> to hide certain pet data points.</p>
+            </div>
+            {% endif %}
+        </div>
+    </form>
+{% endblock %}

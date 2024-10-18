@@ -1,0 +1,46 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}- Register{% endblock %}
+
+{% block body %}
+    <header>
+        <h1>Register</h1>
+    </header>
+
+    {% if enabled %}
+        <form action="{{ path('register_action') }}" id="register_form" method="post">
+            <label for="email">Email</label>
+            <input type="text" name="email">
+
+            <label for="password">Password</label>
+            <input type="password" id="password" name="password">
+
+            <label for="repeat_password">Repeat Password</label>
+            <input type="password" id="repeat_password" name="repeat_password">
+
+            <button id="submit_button" type="submit">Register</button>
+        </form>
+
+        <script>
+            document.getElementById('submit_button').addEventListener('click', (event) => {
+                event.preventDefault();
+                const password = document.getElementById('password').value;
+                const repeat = document.getElementById('repeat_password').value;
+
+                if(password.length == 0) {
+                    alert('Password must not be blank.');
+                    return;
+                }
+
+                if(password !== repeat) {
+                    alert('Passwords do not match.');
+                    return;
+                }
+
+                document.getElementById('register_form').submit();
+            });
+        </script>
+    {% else %}
+        <p>Registration is currently disabled.</p>
+    {% endif %}
+{% endblock %}

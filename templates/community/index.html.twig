@@ -1,0 +1,49 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}- Community{% endblock %}
+
+{% block body %}
+    <div id="community">
+        <h1>Community</h1>
+
+        <article>
+            <table>
+                <thead>
+                    <tr>
+                        <th>User</th>
+                        <th>Petz</th>
+                        <th>Website</th>
+                        <th>Joined</th>
+                    </tr>
+                </thead>
+                <tbody>
+                {% for item in users %}
+                    {% set user = item.User %}
+                    {% set profile = user.getProfile() %}
+                    {% set petCount = item.PetCount %}
+                    <tr>
+                        <td>
+                            <a href="/community/@{{ profile.getUsername() }}">
+                            {% if profile.getDisplayName()|length %}
+                                {{ profile.getDisplayName() }}
+                            {% else %}
+                                {{ profile.getUsername() }}
+                            {% endif %}
+                            </a>
+                        </td>
+                        <td>{{ petCount }}</td>
+                        <td>
+                            {% if profile.getWebsite()|length %}
+                                <a href="{{ profile.getWebsite() }}">{{ profile.getWebsite() }}</a>
+                            {% endif %}
+                        </td>
+                        <td>
+                            {{ user.getDateAdded()|date('Y-m-d') }}
+                        </td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </article>
+    </div>
+{% endblock %}

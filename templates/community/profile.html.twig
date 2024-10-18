@@ -1,0 +1,52 @@
+{% extends 'base.html.twig' %}
+
+{% if error %}
+    {% set name = 'Error' %}
+{% else %}
+    {% set profile = user.getProfile() %}
+    {% set name = profile.getDisplayName()|length ? profile.getDisplayName() : profile.getUsername() %}
+{% endif %}
+
+{% block title %}- {{ name }}{% endblock %}
+
+{% block scripts %}
+    {{ encore_entry_script_tags('scripts/profile') }}
+{% endblock %}
+
+{% block body %}
+<div id="profileOverlay"></div>
+<div id="userProfile">
+    {% if not error and not profile.hideName() %}
+    <h1>{{ name }}</h1>
+    {% endif %}
+
+    <article>
+        {% if error %}
+            <p>It looks like there was an error and this profile either doesn't exist or is marked as private. Sorry about that!</p>
+        {% else %}
+            {% if profile.getPic()|length %}
+                {% set style = "background-image: url('/pics/" ~ user.getHash() ~ "/" ~ profile.getPic() ~ "');" %}
+                {% if profile.getPicWidth() > 0 and profile.getPicWidth() <= 1000 %}
+                    {% set style = style ~ "width:" ~ profile.getPicWidth() ~ "px;" %}
+                {% endif %}
+                {% if profile.getPicHeight() > 0 and profile.getPicHeight() <= 200 %}
+                    {% set style = style ~ "height:" ~ profile.getPicHeight() ~ "px;" %}
+                {% endif %}
+            <header style="{{ style }}"></header>
+            {% endif %}
+
+            {% if profile.getDescription()|length %}
+            <div id="description">
+                {{ markdown.convert(profile.getDescription())|raw }}
+            </div>
+            {% endif %}
+
+            {% if petz|length %}
+                {% include('community/petz/_grid.html.twig') %}
+            {% else %}
+                <p>Hey, there are no petz here...</p>
+            {% endif %}
+        {% endif %}
+    </article>
+</div>
+{% endblock %}

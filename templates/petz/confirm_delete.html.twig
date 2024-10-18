@@ -1,0 +1,36 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}- Delete Pet{% endblock %}
+
+{% block body %}
+    <header>
+        <h1>Delete Pet</h1>
+        <a href="{{ path('petz_list') }}"><span class="material-symbols-outlined">cancel</span> Cancel</a>
+    </header>
+
+    <div id="delete-pet">
+        <div id="pet">
+            <div id="name">{{ pet.getCallName() }}</div>
+            <span class="pic">
+                {% if pet.getPics()|length and picExists(pet.getPics()[0].file) %}
+                    <img src="/pics/{{ pet.getPics()[0].file }}" alt="Pic of {{ pet.getCallName() }}">
+                {% else %}
+                    <img src="{{ asset('/build/images/default_pic.png') }}" alt="Pet Silhouette">
+                {% endif %}
+            </span>
+        </div>
+
+        <form action="{{ path('petz_delete_action', { 'hash': pet.getHash() }) }}" method="post">
+            <p>Please confirm that you want to delete this pet.</p>
+
+            {% if error %}
+                <p class="error">Confirm is required.</p>
+            {% endif %}
+
+            <label for="retired" class="checkbox required">Confirm</label>
+            <input type="checkbox" name="confirm">
+
+            <button type="submit">Delete</button>
+        </form>
+    </div>
+{% endblock %}

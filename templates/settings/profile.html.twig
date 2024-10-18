@@ -1,0 +1,14 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}- ProfileSettings{% endblock %}
+
+{% block scripts %}
+    {{ encore_entry_script_tags('scripts/main') }}
+{% endblock %}
+
+{% block body %}
+    <div id="settings">
+        {{ include('settings/_nav.html.twig') }}
+        <div id="profile"></div>
+    </div>
+{% endblock %}

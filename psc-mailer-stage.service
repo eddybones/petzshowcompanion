@@ -1,0 +1,25 @@
+[Unit]
+Description=Symfony messenger-consume %i
+
+[Service]
+ExecStart=php /var/www/stage.petzshowcompanion.com/bin/console messenger:consume async --time-limit=3600 --failure-limit=5
+Restart=always
+RestartSec=30
+
+[Install]
+WantedBy=default.target
+
+#
+# Enable and start:
+# -----------------
+# systemctl --user enable psc-mailer-stage.service
+# systemctl --user start psc-mailer-stage.service
+#
+# If changes are made to this file, reload daemon:
+# ------------------------------------------------
+# systemctl --user daemon-reload
+#
+# Keep process running after user logout:
+# ---------------------------------------
+# loginctl enable-linger <your-username>
+#

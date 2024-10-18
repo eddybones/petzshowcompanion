@@ -1,0 +1,11 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}- Verify Email{% endblock %}
+
+{% block body %}
+    <header>
+        <h1>Verify Email</h1>
+    </header>
+    <p>You should have received an email at {{ email }} with a verification link. Please click that link to complete your registration.</p>
+    <p>If you did not receive this email, we can try <a href="{{ path('resend_verification') }}">resending it</a>.</p>
+{% endblock %}

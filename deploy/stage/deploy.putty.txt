@@ -1,0 +1,17 @@
+cd /var/www/stage.petzshowcompanion.com
+mv stage_build.zip ../stage_build.zip
+rm -rf *
+unzip -o -q ../stage_build.zip -d .
+rm -f ../stage_build.zip
+ln -s /var/www/psc_stage_data public/pics
+
+systemctl --user stop psc-mailer-stage.service
+mv psc-mailer-stage.service ~/.config/systemd/user
+systemctl --user enable psc-mailer-stage.service
+systemctl --user start psc-mailer-stage.service
+systemctl --user daemon-reload
+
+mysql psc_stage < /var/www/stage.petzshowcompanion.com/schema/schema.sql
+php bin/console cache:clear
+php bin/console cache:warmup
+chown -R www-data:www-data .

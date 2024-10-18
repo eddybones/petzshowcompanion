@@ -1,0 +1,87 @@
+@import '../_vars';
+@import 'mixins';
+
+.petz.compact {
+  border: 1px solid $primary-border-color;
+  border-radius: 6px;
+  overflow: hidden;
+
+  .compactPet {
+    background-color: #d0d0d0;
+    padding: 4px;
+
+    @include show-hide;
+
+    & > details {
+      width: 100%;
+    }
+
+    & > details > summary {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+
+      list-style: none;
+    }
+    & > details > summary:before {
+      display: inline-block;
+      margin: 0 10px;
+      width: 10px;
+      content: '▶';
+    }
+    & > details > summary .name {
+      width: 350px;
+    }
+
+    & > details > summary .rank {
+      display: inline-block;
+      width: 100px;
+    }
+
+    & > details[open] > summary {
+      list-style: none;
+    }
+    & > details[open] > summary:before {
+      display: inline-block;
+      margin: 0 10px;
+      width: 10px;
+      content: '▼';
+    }
+    & > details[open] > summary .points {
+      display: none;
+    }
+
+    & > details section {
+      @include detail;
+
+      .pic {
+        @include pic;
+      }
+
+      .attributes {
+        @include attributes;
+      }
+
+      .points {
+        @include points;
+      }
+
+      aside {
+        display: flex;
+        margin-left: auto;
+
+        .addpoints {
+          @include addpoints;
+        }
+      }
+    }
+
+    .actions {
+      margin-left: auto;
+    }
+  }
+
+  .compactPet.alternate {
+    background-color: #efefef;
+  }
+}

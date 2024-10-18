@@ -1,0 +1,200 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}- Your Petz{% endblock %}
+
+{% set id = rando() %}
+
+{% block scripts %}
+    <script>
+        window.useCompactView = {% if useCompactView %}true{% else %}false{% endif %};
+
+        const rankPoints = [
+            {% for rank in rankPoints %}
+            {
+                'name': '{{ rank.name|camelSpace }}',
+                'value': {{ rank.value }},
+            },
+            {% endfor %}
+        ];
+        const poseRankPoints = [
+            {% for rank in poseRankPoints %}
+            {
+                'name': '{{ rank.name|camelSpace }}',
+                'value': {{ rank.value }},
+            },
+            {% endfor %}
+        ];
+        const sexTypes = [
+            {
+                'name': '?',
+                'value': '',
+            },
+            {% for sex in sexTypes %}
+            {
+                'name': '{{ sex.name }}',
+                'value': '{{ sex.value }}',
+            },
+            {% endfor %}
+        ];
+        const showTypes = [
+            {% for type in showTypes %}
+            {
+                'name': '{{ type.name }}',
+                'value': '{{ type.value }}',
+            },
+            {% endfor %}
+        ];
+        const allTags = [
+            {% for tag in allTags %}
+            {
+                'name': '{{ tag.getName() }}',
+                'value': '{{ tag.getHash() }}',
+            },
+            {% endfor %}
+        ];
+        const species = [
+            {% for type in species %}
+            {
+                'name': '{{ type.name }}',
+                'value': '{{ type.value }}',
+            },
+            {% endfor %}
+        ];
+
+        window.petz = {
+            {% for pet in petz %}
+            '{{ pet.getHash() }}': {
+                'callname': '{{ pet.getCallName() }}',
+                'showname': '{{ pet.getShowName() }}',
+                'prefix': '{{ pet.getPrefix() }}',
+                'hexerOrBreeder': '{{ pet.getHexerOrBreeder() }}',
+                {% if pet.getBirthday() is null %}
+                'birthday': null,
+                {% else %}
+                'birthday': new Date('{{ pet.getBirthday()|date('Y-m-d') }}'),
+                {% endif %}
+                'species': '{{ pet.getType().value }}',
+                'sex': '{{ pet.getSex() }}',
+                'retired': '{{ pet.getRetired()|number_format }}',
+                {% set pic = pet.getPics().first() %}
+                'pic': '{{ pic ? '/pics/' ~ pic.getFile() : '' }}',
+                'notes': `{{ pet.getNotes()|nl2br }}`,
+                'added': new Date('{{ pet.getAddedOn()|date('Y-m-d H:i:s') }}'),
+                'pointsRollup': {
+                    {% for rollup in pet.getPointsRollup() %}
+                    '{{ rollup.getShowType().name }}': {
+                        'type': '{{ rollup.getShowType().name }}',
+                        'total': {{ rollup.getTotal() }},
+                        'title': '{{ getShowTitle(rollup.getShowType(), pet.getType(), rollup.getTotal()) }}',
+                    },
+                    {% endfor %}
+                },
+                'tags': [
+                    {% for tag in pet.getTags() %}
+                        '{{ tag.getHash() }}',
+                    {% endfor %}
+                ]
+            },
+            {% endfor %}
+        };
+
+        window.sorting = JSON.parse(localStorage.getItem('sorting'));
+        if(!window.sorting) {
+            window.sorting = {
+                attribute: 'callname',
+                attributeOrder: 'asc',
+                points: null,
+                pointsOrder: 'asc',
+            };
+        }
+
+        window.filters = JSON.parse(localStorage.getItem('filters'));
+        if(!window.filters) {
+            window.filters = {
+                '{{ id }}': {
+                    field: '',
+                    operator: '',
+                    value: '',
+                    value2: '',
+                }
+            };
+        }
+    </script>
+
+    {{ encore_entry_script_tags('scripts/legacy') }}
+    {{ encore_entry_script_tags('scripts/main') }}
+{% endblock %}
+
+{% block body %}
+    <header>
+        <h1>Your Petz</h1>
+        <a href="{{ path('petz_add') }}"><span class="material-symbols-outlined">add</span> Add Pet</a>
+        <a href="{{ path('petz_list') }}" id="filterButton"><span class="material-symbols-outlined">filter</span> Filter</a>
+        <a href="{{ path('petz_list') }}" id="sortButton"><span class="material-symbols-outlined">sort</span> Sort</a>
+    </header>
+
+    <div id="filterContainer">
+        <div id="filters"></div>
+
+        <div id="addFilter">
+            <span class="material-symbols-outlined">add_circle</span>
+        </div>
+        <button id="applyFilters">Apply</button> <button class="clearFilters">Clear</button>
+    </div>
+
+    <div id="sortContainer">
+        <label for="sortBy">Sort By:</label>
+        <select name="sortByShowPoints" id="sortByShowPoints">
+            <option value="">Show Points...</option>
+            <option value="Pose" data-order="asc">Pose - Ascending</option>
+            <option value="Pose" data-order="desc">Pose - Descending</option>
+            <option value="Trick" data-order="asc">Trick - Ascending</option>
+            <option value="Trick" data-order="desc">Trick - Descending</option>
+            <option value="Agility" data-order="asc">Agility - Ascending</option>
+            <option value="Agility" data-order="desc">Agility - Descending</option>
+            <option value="Frisbee" data-order="asc">Frisbee - Ascending</option>
+            <option value="Frisbee" data-order="desc">Frisbee - Descending</option>
+            <option value="Mousing" data-order="asc">Mousing - Ascending</option>
+            <option value="Mousing" data-order="desc">Mousing - Descending</option>
+        </select>
+        <select name="sortByAttribute" id="sortByAttribute">
+            <option value="callname" data-order="asc">Call Name - Ascending</option>
+            <option value="callname" data-order="desc">Call Name - Descending</option>
+            <option value="showname" data-order="asc">Show Name - Ascending</option>
+            <option value="showname" data-order="desc">Show Name - Descending</option>
+            <option value="species" data-order="asc">Species - Ascending</option>
+            <option value="species" data-order="desc">Species - Descending</option>
+            <option value="prefix" data-order="asc">Prefix - Ascending</option>
+            <option value="prefix" data-order="desc">Prefix - Descending</option>
+            <option value="hexerOrBreeder" data-order="asc">Hexer/Breeder - Ascending</option>
+            <option value="hexerOrBreeder" data-order="desc">Hexer/Breeder - Descending</option>
+            <option value="sex" data-order="asc">Sex - Ascending</option>
+            <option value="sex" data-order="desc">Sex - Descending</option>
+            <option value="retired" data-order="asc">Retired - Ascending</option>
+            <option value="retired" data-order="desc">Retired - Descending</option>
+            <option value="birthday" data-order="asc">Birthday - Ascending</option>
+            <option value="birthday" data-order="desc">Birthday - Descending</option>
+            <option value="added" data-order="asc">Date Added - Ascending</option>
+            <option value="added" data-order="desc">Date Added - Descending</option>
+        </select>
+
+        <button id="applySorting">Apply</button> <button class="resetSorting">Reset</button>
+    </div>
+
+    <div id="filterSortNotices">
+        <div id="filtersApplied">Petz are being filtered. <a href="#" class="clearFilters">Clear filters</a></div>
+        <div id="sortingApplied">Petz are being sorted. <a href="#" class="resetSorting">Clear sorting</a></div>
+    </div>
+
+    {% if petz %}
+        <div class="petz {% if useCompactView %}compact{% endif %}" id="petz">
+        {% if useCompactView %}
+            {% include('petz/_compact.html.twig') %}
+        {% else %}
+            {% include('petz/_expanded.html.twig') %}
+        {% endif %}
+        </div>
+    {% else %}
+        <p>No petz added yet!</p>
+    {% endif %}
+{% endblock %}

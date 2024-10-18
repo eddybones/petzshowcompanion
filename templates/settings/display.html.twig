@@ -1,0 +1,43 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}- Display Settings{% endblock %}
+
+{% block body %}
+    <div id="settings">
+        {{ include('settings/_nav.html.twig') }}
+        <div>
+            <form action="{{ path('display_settings_action') }}" method="post">
+                <h1 class="bordered">Display Settings</h1>
+                {% if saved|default(false) %}
+                    <p class="success">Settings saved!</p>
+                {% endif %}
+
+                <section>
+                    <h1>Petz List</h1>
+                    <label for="useCompactView" class="checkbox">Use Compact View</label>
+                    <input type="checkbox" name="useCompactView" {% if useCompactView %} checked {% endif %}>
+                </section>
+
+                {% if getEnv('PUBLIC_PAGES_ENABLED') %}
+                <section>
+                    <h1>Privacy</h1>
+                    <p>Select the data points that should NOT show on your public pet pages:</p>
+                    <ul id="privacysettings">
+                        <li>Call Name <input type="checkbox" name="privacy_callname" {% if privacy.callNameIsPrivate() %}checked{% endif %}></li>
+                        <li>Show Name <input type="checkbox" name="privacy_showname" {% if privacy.showNameIsPrivate() %}checked{% endif %}></li>
+                        <li>Prefix <input type="checkbox" name="privacy_prefix" {% if privacy.prefixIsPrivate() %}checked{% endif %}></li>
+                        <li>Hexer/Breeder <input type="checkbox" name="privacy_hexer" {% if privacy.hexerOrBreederIsPrivate() %}checked{% endif %}></li>
+                        <li>Birthday <input type="checkbox" name="privacy_birthday" {% if privacy.birthdayIsPrivate() %}checked{% endif %}></li>
+                        <li>Pet Type <input type="checkbox" name="privacy_type" {% if privacy.typeIsPrivate() %}checked{% endif %}></li>
+                        <li>Sex <input type="checkbox" name="privacy_sex" {% if privacy.sexIsPrivate() %}checked{% endif %}></li>
+                        <li>Retired <input type="checkbox" name="privacy_retired" {% if privacy.retiredIsPrivate() %}checked{% endif %}></li>
+                        <li>Notes <input type="checkbox" name="privacy_notes" {% if privacy.notesIsPrivate() %}checked{% endif %}></li>
+                    </ul>
+                </section>
+                {% endif %}
+
+                <button type="submit" name="submit">Save</button>
+            </form>
+        </div>
+    </div>
+{% endblock %}

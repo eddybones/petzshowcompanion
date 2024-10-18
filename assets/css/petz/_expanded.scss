@@ -1,0 +1,52 @@
+@import '../_vars';
+@import 'mixins';
+
+.pet {
+  display: flex;
+
+  @include show-hide;
+
+  margin-bottom: 16px;
+  border: 1px solid $primary-border-color;
+  border-radius: 6px;
+  background-color: #e0e0e0;
+
+  .detail {
+    @include detail;
+  }
+
+  .pic {
+    @include pic;
+  }
+
+  .attributes {
+    @include attributes;
+  }
+
+  .points {
+    @include points;
+  }
+
+  aside {
+    display: flex;
+
+    .addpoints {
+      @include addpoints;
+    }
+
+    .actions {
+      z-index: 100; /* Put it above .addpoints so we can overlap slightly and don't see the gray background from the .pet container past the rounded corners */
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+
+      background-color: #c2c2c2;
+      border-left: 1px solid $tools-border-color;
+      border-radius: 6px;
+
+      a {
+        padding: 5px;
+      }
+    }
+  }
+}
