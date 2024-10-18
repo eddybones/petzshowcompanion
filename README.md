@@ -78,8 +78,8 @@ composer dump-env dev
 
 ### Environment Variables
 You will need to create the following environment variables with proper values for your environment:
-PSC_MYSQL_USER
-PSC_MYSQL_PASSWORD
+* PSC_MYSQL_USER
+* PSC_MYSQL_PASSWORD
 
 
 ### User Setup
